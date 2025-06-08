@@ -2,8 +2,137 @@ import React, { useRef, useState } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { FaLaptopCode, FaMobileAlt, FaPaintBrush, FaBullhorn, FaSun, FaMoon, FaRobot, FaChartLine, FaTimes } from "react-icons/fa";
 
-// Service data with expanded details
+// Service data with expanded details (new services at the top)
 const services = [
+  {
+    icon: <FaLaptopCode />,
+    title: "System Administration and Engineering",
+    desc: "Professional system administration and engineering services to ensure your infrastructure runs smoothly and securely.",
+    details: [
+      "Server setup and maintenance",
+      "Network configuration and security",
+      "System monitoring and optimization",
+      "Disaster recovery planning",
+      "Performance tuning"
+    ],
+    bgDark: "bg-[#5A7F6B]",
+    bgLight: "bg-[#E0E9F7]",
+    imgBgDark: "bg-gray-900",
+    imgBgLight: "bg-white",
+  },
+  {
+    icon: <FaLaptopCode />,
+    title: "Database Design",
+    desc: "Custom database solutions tailored to your business needs with optimal performance and scalability.",
+    details: [
+      "Relational database design",
+      "NoSQL database implementation",
+      "Data modeling and optimization",
+      "Database migration services",
+      "Performance tuning and indexing"
+    ],
+    bgDark: "bg-[#5D5179]",
+    bgLight: "bg-[#EDEAF2]",
+    imgBgDark: "bg-gray-900",
+    imgBgLight: "bg-white",
+  },
+  {
+    icon: <FaLaptopCode />,
+    title: "Software Testing",
+    desc: "Comprehensive testing services to ensure your software is reliable, secure, and performs as expected.",
+    details: [
+      "Unit and integration testing",
+      "Automated testing solutions",
+      "Performance and load testing",
+      "Security vulnerability testing",
+      "QA process implementation"
+    ],
+    bgDark: "bg-[#8C5E58]",
+    bgLight: "bg-[#F5EAE8]",
+    imgBgDark: "bg-gray-900",
+    imgBgLight: "bg-white",
+  },
+  {
+    icon: <FaLaptopCode />,
+    title: "Software and System Maintenance",
+    desc: "Ongoing support and maintenance services to keep your systems running at peak performance.",
+    details: [
+      "Software updates and patches",
+      "Bug fixes and troubleshooting",
+      "Performance monitoring",
+      "Technical support",
+      "Documentation updates"
+    ],
+    bgDark: "bg-[#4D7C8A]",
+    bgLight: "bg-[#E4F0F3]",
+    imgBgDark: "bg-gray-900",
+    imgBgLight: "bg-white",
+  },
+  {
+    icon: <FaLaptopCode />,
+    title: "Cloud Management",
+    desc: "Expert cloud solutions to help you migrate, optimize, and manage your cloud infrastructure.",
+    details: [
+      "Cloud architecture design",
+      "AWS/Azure/GCP implementation",
+      "Cost optimization strategies",
+      "Security and compliance",
+      "DevOps automation"
+    ],
+    bgDark: "bg-[#5A7F6B]",
+    bgLight: "bg-[#E0ECF1]",
+    imgBgDark: "bg-gray-900",
+    imgBgLight: "bg-white",
+  },
+  {
+    icon: <FaPaintBrush />,
+    title: "UI/UX Design",
+    desc: "User-centered design solutions that create intuitive and engaging digital experiences.",
+    details: [
+      "User research and testing",
+      "Wireframing and prototyping",
+      "Interaction design",
+      "Usability evaluation",
+      "Design system creation"
+    ],
+    bgDark: "bg-[#7D6B8D]",
+    bgLight: "bg-[#F1EDF5]",
+    imgBgDark: "bg-gray-900",
+    imgBgLight: "bg-white",
+  },
+  {
+    icon: <FaPaintBrush />,
+    title: "Graphic Design",
+    desc: "Creative visual solutions that communicate your brand message effectively.",
+    details: [
+      "Print and digital media design",
+      "Illustration and iconography",
+      "Typography and layout",
+      "Photo editing and manipulation",
+      "Visual content creation"
+    ],
+    bgDark: "bg-[#9D6B53]",
+    bgLight: "bg-[#F7EFEA]",
+    imgBgDark: "bg-gray-900",
+    imgBgLight: "bg-white",
+  },
+  {
+    icon: <FaLaptopCode />,
+    title: "System Management",
+    desc: "Comprehensive system management services to optimize your IT infrastructure.",
+    details: [
+      "IT infrastructure management",
+      "Configuration management",
+      "Patch management",
+      "System health monitoring",
+      "Incident management"
+    ],
+    bgDark: "bg-[#4A6FA5]",
+    bgLight: "bg-[#E8F3EC]",
+    imgBgDark: "bg-gray-900",
+    imgBgLight: "bg-white",
+  },
+  // Original services below
   {
     icon: <FaLaptopCode />,
     title: "Web Development",
@@ -86,7 +215,7 @@ const services = [
   },
   {
     icon: <FaChartLine />,
-    title: "Software Consultancy",
+    title: " Consultancy",
     desc: "Expert guidance on technology stack selection, architecture design, and digital transformation strategies.",
     details: [
       "Technology audits",
@@ -406,7 +535,7 @@ const ServiceDetailsModal = ({ service, onClose, darkMode, openConsultationModal
 
 // Main Services Page component
 const ServicesPage = () => {
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(true); // Dark mode set as default
   const [selectedService, setSelectedService] = useState(null); // State for service details modal
   const [showConsultationModal, setShowConsultationModal] = useState(false); // State for consultation modal
   const [prefilledService, setPrefilledService] = useState(''); // State to pass service to form
