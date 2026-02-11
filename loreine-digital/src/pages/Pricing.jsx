@@ -1,14 +1,26 @@
-import React, { useState, useRef, useMemo } from "react";
+import React, { useState, useRef, useMemo, useCallback } from "react";
 import { motion, AnimatePresence, useInView } from "framer-motion";
-import { FaCheck, FaChevronDown, FaHandshake, FaRocket, FaLightbulb, FaSun, FaMoon, FaLaptopCode, FaMobileAlt, FaPaintBrush, FaTimes } from "react-icons/fa";
 import emailjs from "@emailjs/browser";
+
+// Import Material-UI Icons
+import Check from '@mui/icons-material/Check';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import Handshake from '@mui/icons-material/Handshake';
+import RocketLaunch from '@mui/icons-material/RocketLaunch';
+import Lightbulb from '@mui/icons-material/Lightbulb';
+import LightMode from '@mui/icons-material/LightMode';
+import DarkMode from '@mui/icons-material/DarkMode';
+import LaptopChromebook from '@mui/icons-material/LaptopChromebook';
+import PhoneIphone from '@mui/icons-material/PhoneIphone';
+import Brush from '@mui/icons-material/Brush';
+import Close from '@mui/icons-material/Close';
+
 
 // Static data moved outside component to prevent recreation on re-render
 const SERVICE_PACKAGES = [
   {
     id: 1,
-    name: "Basic Plan",
-    price: 20000,
+    name: "Starter Plan",
     features: [
       "Custom Design (Basic)",
       "Up to 5 Pages",
@@ -27,7 +39,6 @@ const SERVICE_PACKAGES = [
   {
     id: 2,
     name: "E-commerce Website",
-    price: 45000,
     features: [
       "Online Store Functionality",
       "Product Listings (Up to 50)",
@@ -63,24 +74,25 @@ const SERVICE_PACKAGES = [
   }
 ];
 
+// Updated with Material-UI Icons
 const WHY_CHOOSE_US = [
   {
-    icon: <FaHandshake className="text-cyan-400 text-2xl" />,
+    icon: <Handshake className="text-gray-600" sx={{ fontSize: '2.25rem' }} />,
     title: "Payment Upon Completion",
     description: "You only pay the final balance once you're satisfied"
   },
   {
-    icon: <FaLightbulb className="text-blue-400 text-2xl" />,
+    icon: <Lightbulb className="text-gray-600" sx={{ fontSize: '2.25rem' }} />,
     title: "Free Consultation",
     description: "Get expert insights tailored to your business"
   },
   {
-    icon: <FaCheck className="text-green-400 text-2xl" />,
+    icon: <Check className="text-gray-600" sx={{ fontSize: '2.25rem' }} />,
     title: "Transparent Pricing",
     description: "Clear, upfront costs with no hidden fees"
   },
   {
-    icon: <FaRocket className="text-purple-400 text-2xl" />,
+    icon: <RocketLaunch className="text-gray-600" sx={{ fontSize: '2.25rem' }} />,
     title: "Fast Delivery",
     description: "High-quality websites delivered efficiently"
   }
@@ -111,7 +123,7 @@ const fadeInUp = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { 
+    transition: {
       duration: 0.8,
       ease: [0.6, 0.05, 0.01, 0.9],
       staggerChildren: 0.1
@@ -120,17 +132,17 @@ const fadeInUp = {
 };
 
 const modalVariants = {
-  hidden: { 
+  hidden: {
     opacity: 0,
     scale: 0.95,
     y: 20,
     transition: { duration: 0.3, ease: "easeIn" }
   },
-  visible: { 
+  visible: {
     opacity: 1,
     scale: 1,
     y: 0,
-    transition: { 
+    transition: {
       duration: 0.4,
       ease: [0.6, 0.05, 0.01, 0.9],
       staggerChildren: 0.1
@@ -162,7 +174,6 @@ const ServiceCard = React.memo(({ pkg, index, darkMode, setShowModal }) => {
         darkMode ? pkg.bgDark : pkg.bgLight
       } rounded-[50px] flex flex-col-reverse md:flex-row items-center justify-between px-6 md:px-12 py-16 md:py-20 transition-all duration-500`}
     >
-      {/* Icon Container - Removed animation */}
       <div
         className={`relative w-60 h-60 md:w-80 md:h-80 rounded-full ${
           darkMode ? pkg.imgBgDark : pkg.imgBgLight
@@ -171,13 +182,12 @@ const ServiceCard = React.memo(({ pkg, index, darkMode, setShowModal }) => {
         } transition-all duration-500`}
       >
         <div className="absolute inset-0 rounded-full overflow-hidden flex items-center justify-center">
+          {/* Material-UI Icons with inherited font size */}
           <div className={`text-5xl md:text-6xl ${darkMode ? "text-white" : "text-black"}`}>
-            {pkg.id === 1 ? <FaLaptopCode /> : pkg.id === 2 ? <FaMobileAlt /> : <FaPaintBrush />}
+            {pkg.id === 1 ? <LaptopChromebook fontSize="inherit" /> : pkg.id === 2 ? <PhoneIphone fontSize="inherit" /> : <Brush fontSize="inherit" />}
           </div>
         </div>
       </div>
-
-      {/* Text Content */}
       <motion.div
         className={`flex-1 max-w-xl text-center md:text-left ${
           index % 2 !== 0 ? "md:order-first md:text-right" : ""
@@ -222,7 +232,7 @@ const PricingPage = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    phone: "", // New phone field
+    phone: "",
     plan: "",
     message: ""
   });
@@ -233,11 +243,18 @@ const PricingPage = () => {
   // Memoize the background SVG to prevent recreation on re-render
   const backgroundPattern = useMemo(() => (
     <div className="fixed inset-0 pointer-events-none">
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlblRyYW5zZm9ybT0icm90YXRlKDQ1KSI+PHJlY3Qgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDIpIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCBmaWxsPSJ1cmwoI3BhdHRlcm4pIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIi8+PC9zdmc+')] opacity-5"></div>
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAyKSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3QgZmlsbD0idXJsKCNwYXR0ZXJuKSIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIvPjwvc3ZnPg==')] opacity-5"></div>
     </div>
   ), []);
 
-  const sendEmail = async (e) => {
+  // Unified handler for all form inputs
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Memoized email sending function
+  const sendEmail = useCallback(async (e) => {
     e.preventDefault();
     setMessage("Sending message...");
 
@@ -249,11 +266,12 @@ const PricingPage = () => {
         process.env.REACT_APP_EMAILJS_PUBLIC_KEY
       );
       setMessage("Message sent successfully!");
-      setFormData({ name: "", email: "", phone: "", plan: "", message: "" }); // Clear phone field as well
+      setFormData({ name: "", email: "", phone: "", plan: "", message: "" });
     } catch (error) {
+      console.error("EMAILJS FAILED...", error);
       setMessage("Error sending message. Please try again.");
     }
-  };
+  }, []); // Empty dependency array ensures the function is created only once
 
   return (
     <section
@@ -272,73 +290,62 @@ const PricingPage = () => {
             whileTap={{ scale: 0.95 }}
             aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
           >
-            {darkMode ? <FaSun /> : <FaMoon />}
+            {/* Material-UI Theme Icons */}
+            {darkMode ? <LightMode /> : <DarkMode />}
             {darkMode ? "Light Mode" : "Dark Mode"}
           </motion.button>
         </div>
 
-        {/* Hero Section */}
-        <motion.div 
-          className="text-center mb-24 md:mb-32"
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+        {/* Hero Section - Optimized Spacing */}
+        <motion.div
+          className="text-center mb-16 max-w-3xl mx-auto" // Reduced bottom margin
+          initial="hidden"
+          animate="visible"
+          variants={{
+            hidden: { opacity: 0 },
+            visible: {
+              opacity: 1,
+              transition: { staggerChildren: 0.1, delayChildren: 0.1 },
+            },
+          }}
         >
-          <div className="max-w-4xl mx-auto px-4">
-            <motion.h1
-              className={`text-2xl sm:text-5xl md:text-4xl font-bold leading-tight mb-6 ${darkMode ? "text-white" : "text-gray-900"}`}
-              variants={fadeInUp}
+          <motion.h1
+            variants={fadeInUp}
+            className={`text-4xl md:text-6xl font-bold tracking-tighter mb-4 ${
+              darkMode ? "text-white" : "text-gray-900"
+            }`}
+          >
+            Launch Your
+            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
+              Digital Presence
+            </span>
+          </motion.h1>
+          <motion.p
+            variants={fadeInUp}
+            className={`text-lg md:text-xl max-w-xl mx-auto mb-8 ${
+              darkMode ? "text-gray-300" : "text-gray-600"
+            }`}
+          >
+            We build stunning, high-performance websites—from sleek portfolios to
+            powerful e-commerce stores.
+          </motion.p>
+          <motion.div
+            variants={fadeInUp}
+            className="flex flex-col sm:flex-row items-center justify-center gap-4"
+          >
+            <motion.button
+              whileHover={{ scale: 1.05, y: -2 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => setShowModal(true)}
+              className="px-7 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full text-white font-semibold shadow-lg hover:shadow-blue-500/30 transition-all w-full sm:w-auto"
+              aria-label="Request free consultation"
             >
-              <span className="block">Launch Your Professional</span>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
-                Online Presence
-              </span>
-            </motion.h1>
-
-            <motion.p
-              className={`text-xl md:text-2xl mb-8 max-w-2xl mx-auto leading-relaxed ${darkMode ? "text-gray-300" : "text-gray-600"}`}
-              variants={fadeInUp}
-              transition={{ delay: 0.2 }}
-            >
-              We craft everything from robust e-commerce platforms to captivating digital portfolios.
-            </motion.p>
-
-            <motion.div
-              className={`text-2xl md:text-3xl font-semibold mb-10 ${darkMode ? "text-gray-200" : "text-gray-700"}`}
-              variants={fadeInUp}
-              transition={{ delay: 0.4 }}
-            >
-              Starting at <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-teal-500">20,000 KSH</span>
-            </motion.div>
-
-            <motion.div
-              variants={fadeInUp}
-              transition={{ delay: 0.6 }}
-            >
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => setShowModal(true)}
-                className="px-8 py-3.5 bg-gradient-to-r from-cyan-600 to-blue-600 rounded-lg text-white font-semibold shadow-lg hover:shadow-xl transition-all"
-                aria-label="Request free consultation"
-              >
-                Request Free Consultation
-              </motion.button>
-
-              {/* Trust indicator element */}
-              <div className={`mt-6 text-sm ${darkMode ? "text-gray-400" : "text-gray-500"} flex items-center justify-center gap-2`}>
-                <div className="flex -space-x-2">
-                  {[1, 2, 3].map((item) => (
-                    <div 
-                      key={item}
-                      className="w-8 h-8 rounded-full border-2 border-white dark:border-gray-800 bg-gray-200 dark:bg-gray-600"
-                    />
-                  ))}
-                </div>
-                <span>Trusted by 100+ businesses</span>
-              </div>
-            </motion.div>
-          </div>
+              Request a Free Consultation
+            </motion.button>
+            <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
+              Starting from <strong className={darkMode ? "text-white/90" : "text-black/90"}>KSH 30,000</strong>
+            </p>
+          </motion.div>
         </motion.div>
 
         {/* Service Packages */}
@@ -403,11 +410,11 @@ const PricingPage = () => {
             {WHY_CHOOSE_US.map((point, index) => (
               <motion.div
                 key={index}
-                className={`rounded-[30px] p-8 ${darkMode ? "bg-gray-900/50" : "bg-gray-100"} border ${darkMode ? "border-gray-800" : "border-gray-200"}`}
+                className={`rounded-[10px] p-8 ${darkMode ? "bg-gray-900/50" : "bg-gray-100"} border ${darkMode ? "border-gray-800" : "border-gray-200"}`}
                 variants={staggerItem}
                 whileHover={{ y: -5 }}
               >
-                <div className="flex justify-center mb-4">{point.icon}</div>
+                <div className={`flex justify-center mb-4 ${darkMode ? "text-white" : "text-gray-600"}`}>{React.cloneElement(point.icon, { className: 'text-inherit' })}</div>
                 <h3 className={`text-xl font-medium text-center mb-2 ${darkMode ? "text-white" : "text-gray-900"}`}>
                   {point.title}
                 </h3>
@@ -465,7 +472,8 @@ const PricingPage = () => {
                 >
                   <h3 className="text-lg font-medium">{faq.q}</h3>
                   <div className={`transition-transform ${activeFAQ === index ? 'rotate-180' : ''}`}>
-                    <FaChevronDown className={darkMode ? "text-cyan-400" : "text-blue-500"} />
+                    {/* Material-UI Chevron Icon */}
+                    <ExpandMore className={darkMode ? "text-cyan-400" : "text-blue-500"} />
                   </div>
                 </button>
                 <AnimatePresence>
@@ -496,7 +504,7 @@ const PricingPage = () => {
           transition={{ duration: 0.8 }}
         >
           <motion.h2
-            className={`text-3xl md:text-4xl font-medium mb-6 ${darkMode ? "text-white" : "text-gray-900"}`} 
+            className={`text-3xl md:text-4xl font-medium mb-6 ${darkMode ? "text-white" : "text-gray-900"}`}
             variants={fadeInUp}
           >
             Ready to get started?
@@ -531,6 +539,7 @@ const PricingPage = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
+            onClick={() => setShowModal(false)}
           >
             <motion.div
               variants={modalVariants}
@@ -548,10 +557,11 @@ const PricingPage = () => {
                 className={`absolute top-3 right-3 z-10 p-2 rounded-full ${darkMode ? 'text-white hover:bg-gray-800' : 'text-gray-800 hover:bg-gray-100'}`}
                 aria-label="Close modal"
               >
-                <FaTimes className="text-xl" />
+                {/* Material-UI Close Icon */}
+                <Close className="text-xl" />
               </button>
 
-              <div className={`overflow-y-auto flex-1 p-6 ${darkMode ? 'bg-gray-900' : 'bg-white'}`}>
+              <div className="overflow-y-auto flex-1 p-6">
                 <motion.h2
                   id="modal-title"
                   className={`text-2xl font-bold mb-6 ${darkMode ? 'text-white' : 'text-gray-900'}`}
@@ -582,7 +592,7 @@ const PricingPage = () => {
                         type="text"
                         name="name"
                         value={formData.name}
-                        onChange={(e) => setFormData({...formData, name: e.target.value})}
+                        onChange={handleChange}
                         className={`w-full rounded-lg px-4 py-3 ${darkMode ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-900'} border ${darkMode ? 'border-gray-700' : 'border-gray-300'} focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400 outline-none transition`}
                         required
                       />
@@ -595,33 +605,32 @@ const PricingPage = () => {
                         type="email"
                         name="email"
                         value={formData.email}
-                        onChange={(e) => setFormData({...formData, email: e.target.value})}
+                        onChange={handleChange}
                         className={`w-full rounded-lg px-4 py-3 ${darkMode ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-900'} border ${darkMode ? 'border-gray-700' : 'border-gray-300'} focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400 outline-none transition`}
                         required
                       />
                     </motion.div>
 
-                    {/* New Phone Number Field */}
                     <motion.div variants={staggerItem}>
-                      <label htmlFor="phone" className={`block text-sm mb-1 ${darkMode ? 'text-white/80' : 'text-gray-700'}`}>Phone Number </label>
+                      <label htmlFor="phone" className={`block text-sm mb-1 ${darkMode ? 'text-white/80' : 'text-gray-700'}`}>Phone Number</label>
                       <input
                         id="phone"
-                        type="tel" // Use type="tel" for phone numbers
+                        type="tel"
                         name="phone"
                         value={formData.phone}
-                        onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                        onChange={handleChange}
                         className={`w-full rounded-lg px-4 py-3 ${darkMode ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-900'} border ${darkMode ? 'border-gray-700' : 'border-gray-300'} focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400 outline-none transition`}
                       />
                     </motion.div>
 
-                    <motion.div variants={staggerItem}>
-                      <label htmlFor="service" className={`block text-sm mb-1 ${darkMode ? 'text-white/80' : 'text-gray-700'}`}>Interested Service</label>
+                    <motion.div variants={staggerItem} className="relative">
+                      <label htmlFor="plan" className={`block text-sm mb-1 ${darkMode ? 'text-white/80' : 'text-gray-700'}`}>Interested Service</label>
                       <select
-                        id="service"
-                        name="service"
+                        id="plan"
+                        name="plan"
                         value={formData.plan}
-                        onChange={(e) => setFormData({...formData, plan: e.target.value})}
-                        className={`w-full rounded-lg px-4 py-3 ${darkMode ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-900'} border ${darkMode ? 'border-gray-700' : 'border-gray-300'} focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400 outline-none transition appearance-none`}
+                        onChange={handleChange}
+                        className={`w-full rounded-lg px-4 py-3 pr-8 ${darkMode ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-900'} border ${darkMode ? 'border-gray-700' : 'border-gray-300'} focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400 outline-none transition appearance-none`}
                         required
                       >
                         <option value="">Select a service</option>
@@ -629,6 +638,10 @@ const PricingPage = () => {
                         <option value="E-commerce Website">E-commerce Website</option>
                         <option value="Custom Solution">Custom Solution</option>
                       </select>
+                      <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none top-7">
+                        {/* Material-UI Chevron Icon for select */}
+                        <ExpandMore className={`h-4 w-4 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`} />
+                      </div>
                     </motion.div>
 
                     <motion.div variants={staggerItem}>
@@ -637,7 +650,7 @@ const PricingPage = () => {
                         id="message"
                         name="message"
                         value={formData.message}
-                        onChange={(e) => setFormData({...formData, message: e.target.value})}
+                        onChange={handleChange}
                         rows="4"
                         className={`w-full rounded-lg px-4 py-3 ${darkMode ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-900'} border ${darkMode ? 'border-gray-700' : 'border-gray-300'} focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400 outline-none transition`}
                         required
@@ -647,7 +660,7 @@ const PricingPage = () => {
 
                   {message && (
                     <motion.div
-                      className={`mt-4 p-3 rounded-lg ${message.includes("successfully") ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}
+                      className={`mt-4 p-3 rounded-lg text-center ${message.includes("successfully") ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       role="alert"
@@ -663,7 +676,7 @@ const PricingPage = () => {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
-                    {message === "Sending message..." ? "Sending..." : "Send Message"}
+                    {message.includes("Sending") ? "Sending..." : "Send Message"}
                   </motion.button>
                 </form>
               </div>

@@ -2,6 +2,11 @@ import React, { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaSun, FaMoon, FaTimes, FaLinkedin, FaTwitter } from "react-icons/fa";
 
+// Import Material-UI icons for the Design Principles section
+import SettingsEthernetOutlinedIcon from '@mui/icons-material/SettingsEthernetOutlined';
+import LightbulbOutlinedIcon from '@mui/icons-material/LightbulbOutlined';
+import LayersOutlinedIcon from '@mui/icons-material/LayersOutlined';
+
 // Animation variants
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -83,17 +88,17 @@ const DESIGN_PRINCIPLES = [
   {
     title: "Precision",
     description: "Pixel-perfect execution with atomic attention.",
-    icon: "⚡"
+    icon: SettingsEthernetOutlinedIcon // MUI Icon Component
   },
   {
     title: "Clarity",
     description: "Simplifying complexity through thoughtful design.",
-    icon: "🔍"
+    icon: LightbulbOutlinedIcon // MUI Icon Component
   },
   {
     title: "Depth",
     description: "Layered experiences that reward exploration.",
-    icon: "🌌"
+    icon: LayersOutlinedIcon // MUI Icon Component
   }
 ];
 
@@ -185,20 +190,6 @@ const AboutPage = () => {
             >
               Our journey is rooted in the conviction that technology, when artfully combined with purpose-driven design, can unlock transformative outcomes. We are a collective of <span className={`${darkMode ? "text-cyan-400" : "text-blue-600"}`}>passionate creators</span> and <span className={`${darkMode ? "text-cyan-400" : "text-blue-600"}`}>strategic thinkers</span>, dedicated to engineering bespoke digital solutions that not only function flawlessly but also resonate deeply and drive <span className={`${darkMode ? "text-cyan-400" : "text-blue-600"}`}>meaningful engagement</span>.
             </motion.p>
-
-            <motion.button
-              onClick={() => setShowTeam(true)}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.2 }}
-              variants={fadeInUp}
-              transition={{ delay: 0.8 }}
-              whileHover={{ scale: 1.03, boxShadow: darkMode ? "0px 0px 10px rgba(0, 200, 200, 0.3)" : "0px 0px 10px rgba(59, 130, 246, 0.2)"}}
-              whileTap={{ scale: 0.95 }}
-              className="px-5 py-2.5 bg-gradient-to-r from-cyan-600 to-blue-600 rounded-lg text-white font-medium hover:from-cyan-500 hover:to-blue-500 transition-all text-sm"
-            >
-              Meet our experts →
-            </motion.button>
           </div>
 
           <motion.div
@@ -246,7 +237,9 @@ const AboutPage = () => {
                 className={`p-6 rounded-lg ${darkMode ? "bg-gray-900/60" : "bg-gray-50/80"} border ${darkMode ? "border-gray-700/50" : "border-gray-200/80"} hover:border-cyan-400/50 transition-all duration-300`}
                 whileHover={{ y: -5, boxShadow: darkMode ? "0px 8px 15px rgba(0, 220, 220, 0.15)" : "0px 8px 15px rgba(50, 100, 250, 0.1)" }}
               >
-                <div className={`text-3xl mb-3 ${darkMode ? "text-cyan-300" : "text-blue-500"}`}>{item.icon}</div>
+                <div className={`text-3xl mb-3 ${darkMode ? "text-cyan-300" : "text-blue-500"}`}>
+                  <item.icon fontSize="large" />
+                </div>
                 <h3 className={`text-lg font-medium mb-1.5 ${darkMode ? "text-white" : "text-gray-900"}`}>
                   {item.title}
                 </h3>

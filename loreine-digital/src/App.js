@@ -1,10 +1,10 @@
-import React from "react"; // Removed useEffect from here if not used for other purposes
+import React from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-import ScrollToTop from "./components/ScrollToTop"; // Adjust path if needed
+import ScrollToTop from "./components/ScrollToTop";
 
 import About from "./pages/About";
 import Services from "./pages/Services";
@@ -45,27 +45,21 @@ function App() {
   const location = useLocation();
 
   return (
-    <div className="app">
-      <ScrollToTop /> {/* Add the ScrollToTop component here */}
+    // MODIFICATION HERE: Added a subtle background color to the main app container.
+    // This color will show during the brief moment between page transitions.
+    <div className="app bg-gray-50 dark:bg-black min-h-screen"> 
+      <ScrollToTop />
       <Header />
-      
-      {/* data-animate-presence seems like a custom attribute for your styling, AnimatePresence itself uses the 'mode' prop */}
-      <AnimatePresence mode="wait"> {/* Ensure 'mode' is what you intend, 'wait' is common */}
-        {/* Subtle loading indicator - Its behavior with AnimatePresence depends on its key and conditional rendering */}
-        {/* If this indicator should always be visible during transitions, its current placement is fine. */}
-        {/* However, often AnimatePresence children are the routes themselves with unique keys. */}
-        {/* For simplicity in this example, I'm leaving your RouteTransitionIndicator as is. */}
-        {/* If it's meant to be part of the exiting/entering page, it should be keyed like the routes. */}
-        <RouteTransitionIndicator key={`indicator-${location.pathname}`} /> {/* Example if it should also animate with routes */}
 
-        {/* Page routes with transitions */}
-        {/* The key on Routes or on its direct child <motion.div> ensures AnimatePresence detects changes */}
+      <AnimatePresence mode="wait">
+        <RouteTransitionIndicator key={`indicator-${location.pathname}`} />
+
         <Routes location={location} key={location.pathname}>
           <Route
             path="/"
             element={
               <motion.div
-                key="home" // Add a unique key to direct children of AnimatePresence (or its descendant managing animated items)
+                key="home"
                 variants={pageVariants}
                 initial="initial"
                 animate="animate"
@@ -140,14 +134,13 @@ function App() {
       </AnimatePresence>
 
       <Footer />
-      
-      {/* Global styles for the transition indicator */}
+
       <style jsx global>{`
         @keyframes fadePulse {
           0%, 100% { opacity: 0.4; transform: scale(0.9); }
           50% { opacity: 0.8; transform: scale(1.1); }
         }
-        
+
         .route-transition-indicator {
           position: fixed;
           bottom: 24px;
@@ -159,16 +152,10 @@ function App() {
           animation: fadePulse 1.2s ease-in-out infinite;
           z-index: 1000;
           pointer-events: none;
-          /* display: none; -- Controlled by AnimatePresence or other logic if keyed */
-          /* The [data-animate-presence] .route-transition-indicator selector might be how you were toggling it. */
-          /* If RouteTransitionIndicator is keyed as a child of AnimatePresence, Framer Motion handles its appearance/disappearance. */
         }
-        
-        /* Removed [data-animate-presence] selector as AnimatePresence handles children directly */
-        /* If you still need it for a specific purpose with your custom attribute, you can add it back. */
 
         .page-content {
-          min-height: calc(100vh - 120px); /* Adjust based on header/footer height */
+          min-height: calc(100vh - 120px);
         }
       `}</style>
     </div>
